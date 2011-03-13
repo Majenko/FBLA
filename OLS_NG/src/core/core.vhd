@@ -366,10 +366,12 @@ port map (
 p_RLE_comb: process(rleEnable, memoryIn)
 begin
     ls_memoryIn <= memoryIn;
-    ls_memoryIn(MEMORY_DEPTH-1) <= '0';
         
     -- ===  RLE-Decoding Bit beim Lesen aus dem Speicher zur höchsten Position für die Übertragung verschieben  === --
     if (rleEnable = '1') then
+    
+        ls_memoryIn(MEMORY_DEPTH-1) <= '0';
+        
         case MEMORY_DEPTH is
             when 0 to 7 =>
                 ls_memoryIn( 7) <= memoryIn(MEMORY_DEPTH-1);
