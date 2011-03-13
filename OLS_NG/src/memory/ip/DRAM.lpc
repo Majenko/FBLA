@@ -1,0 +1,37 @@
+[Device]
+Family=latticexp2
+PartType=LFXP2-5E
+PartName=LFXP2-5E-6TN144C
+SpeedGrade=-6
+Package=TQFP144
+OperatingCondition=COM
+Status=P
+
+[IP]
+VendorName=Lattice Semiconductor Corporation
+CoreType=LPM
+CoreStatus=Demo
+CoreName=Distributed_SPRAM
+CoreRevision=3.5
+ModuleName=DRAM
+SourceFormat=VHDL
+ParameterFileVersion=1.0
+Date=01/22/2011
+Time=19:39:12
+
+[Parameters]
+Verilog=0
+VHDL=1
+EDIF=1
+Destination=Synplicity
+Expression=BusA(0 to 7)
+Order=Big Endian [MSB:LSB]
+IO=0
+Addresses=240
+Data=36
+LUT=1
+MemFile=
+MemFormat=orca
+
+[FilesGenerated]
+=mem

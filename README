@@ -1,0 +1,7 @@
+FPGA Based Logic Analyzer repository
+
+This is the public GIT repository for FPGA Based Logic Analyzer (short name: FBLA)
+
+This Logic Analyzer based on SUMP <http://www.sump.org/projects/analyzer/>
+
+As client software I recommend the OpenBench LogicSniffer <https://github.com/jawi/ols>

@@ -1,0 +1,59 @@
+JDF B
+// Created by Version 8.101 
+PROJECT OLS_NG
+DESIGN ols_ng Normal
+DEVKIT LFXP2-5E-6TN144C
+ENTRY Pure VHDL
+MODULE ..\..\src\lattice.vhd
+MODSTYLE BUFGMUX Normal
+MODSTYLE clockman Normal
+MODULE ..\..\src\memory\ip\DRAM.lpc
+MODSTYLE dram Normal
+MODULE ..\..\src\memory\ip\BRAM.lpc
+MODSTYLE bram Normal
+MODULE ..\..\src\memory\lattice_sram.vhd
+MODSTYLE sram_bram Normal
+MODULE ..\..\src\memory\n_to_m_encode.vhd
+MODSTYLE n_to_m_encode Normal
+MODULE ..\..\src\memory\n_to_m_decode.vhd
+MODSTYLE n_to_m_decode Normal
+MODULE ..\..\src\memory\n2m_translate.vhd
+MODSTYLE n2m_translate Normal
+MODULE ..\..\src\core\controller.vhd
+MODSTYLE controller Normal
+MODULE ..\..\src\core\rle_enc.vhd
+MODSTYLE rle_enc Normal
+MODULE ..\..\src\core\trigger\stage.vhd
+MODSTYLE stage Normal
+MODULE ..\..\src\core\trigger\trigger.vhd
+MODSTYLE trigger Normal
+MODULE ..\..\src\core\sampler.vhd
+MODSTYLE sampler Normal
+MODULE ..\..\src\core\sync\filter.vhd
+MODSTYLE filter Normal
+MODULE ..\..\src\core\sync\demux.vhd
+MODSTYLE demux Normal
+MODULE ..\..\src\core\sync\sync.vhd
+MODSTYLE sync Normal
+MODULE ..\..\src\core\flags.vhd
+MODSTYLE flags Normal
+MODULE ..\..\src\core\decoder.vhd
+MODSTYLE decoder Normal
+MODULE ..\..\src\core\core.vhd
+MODSTYLE core Normal
+MODULE ..\..\src\rs232\transmitter.vhd
+MODSTYLE transmitter Normal
+MODULE ..\..\src\rs232\receiver.vhd
+MODSTYLE receiver Normal
+MODULE ..\..\src\rs232\prescaler.vhd
+MODSTYLE prescaler Normal
+MODULE ..\..\src\rs232\eia232.vhd
+MODSTYLE eia232 Normal
+MODULE ..\..\src\ip\PLL.lpc
+MODSTYLE pll Normal
+MODULE ..\..\src\logic_sniffer.vhd
+MODSTYLE Logic_Sniffer Normal
+SYNTHESIS_TOOL Synplify
+SIMULATOR_TOOL ActiveHDL
+AUTO_READ_DESIGN TRUE
+TOPMODULE Logic_Sniffer

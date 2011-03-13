@@ -1,0 +1,173 @@
+COMMERCIAL;
+rvl_alias "clock" "clock";
+BLOCK RESETPATHS ;
+BLOCK ASYNCPATHS ;
+BLOCK JTAGPATHS ;
+SYSCONFIG DONE_OD=ON DONE_EX=OFF CONFIG_SECURE=OFF WAKE_UP=21 WAKE_ON_LOCK=OFF INBUF=ON MASTER_SPI_PORT=DISABLE SLAVE_SPI_PORT=DISABLE MY_ASSP=OFF ONE_TIME_PROGRAM=OFF ;
+#
+LOCATE COMP "led_0" SITE "46" ;
+LOCATE COMP "led_1" SITE "45" ;
+LOCATE COMP "led_2" SITE "44" ;
+LOCATE COMP "led_3" SITE "43" ;
+LOCATE COMP "led_4" SITE "40" ;
+LOCATE COMP "led_5" SITE "39" ;
+LOCATE COMP "led_6" SITE "38" ;
+LOCATE COMP "led_7" SITE "37" ;
+# -- ===  original  === --
+LOCATE COMP "ResetSwitch_ni" SITE "19" ;
+LOCATE COMP "spi_csn" SITE "11" ;
+LOCATE COMP "spi_miso" SITE "16" ;
+LOCATE COMP "spi_mosi" SITE "15" ;
+LOCATE COMP "spi_sxtalClock" SITE "13" ;
+LOCATE COMP "wn" SITE "18";
+LOCATE COMP "holdn" SITE "17";
+# -- ===  umgebaut  === --
+# LOCATE COMP "ResetSwitch_ni" SITE "47" ;
+# LOCATE COMP "spi_csn" SITE "15" ;
+# LOCATE COMP "spi_miso" SITE "18" ;
+# LOCATE COMP "spi_mosi" SITE "19" ;
+# LOCATE COMP "spi_sxtalClock" SITE "16" ;
+# LOCATE COMP "holdn" SITE "17" ;
+# LOCATE COMP "spi_cssn" SITE "11" ;
+# #
+LOCATE COMP "J2_0" SITE "31" ;
+LOCATE COMP "J2_1" SITE "32" ;
+LOCATE COMP "J2_2" SITE "27" ;
+LOCATE COMP "J2_3" SITE "35" ;
+LOCATE COMP "J2_4" SITE "28" ;
+LOCATE COMP "J2_5" SITE "36" ;
+LOCATE COMP "J2_6" SITE "29" ;
+LOCATE COMP "J2_7" SITE "30" ;
+# #
+# # -- ===  Umbau Ende  === --
+LOCATE COMP "ramA_0" SITE "119" ;
+LOCATE COMP "ramA_1" SITE "120" ;
+LOCATE COMP "ramA_2" SITE "121" ;
+LOCATE COMP "ramA_3" SITE "122" ;
+LOCATE COMP "ramA_4" SITE "123" ;
+LOCATE COMP "ramA_5" SITE "124" ;
+LOCATE COMP "ramA_6" SITE "125" ;
+LOCATE COMP "ramA_7" SITE "127" ;
+LOCATE COMP "ramA_8" SITE "129" ;
+LOCATE COMP "ramA_9" SITE "130" ;
+LOCATE COMP "ramA_10" SITE "131" ;
+LOCATE COMP "ramA_11" SITE "132" ;
+LOCATE COMP "ramA_12" SITE "133" ;
+LOCATE COMP "ramA_13" SITE "134" ;
+LOCATE COMP "ramA_14" SITE "137" ;
+LOCATE COMP "ramA_15" SITE "138" ;
+LOCATE COMP "ramA_16" SITE "141" ;
+LOCATE COMP "ramCE1" SITE "142" ;
+LOCATE COMP "ramIO1_0" SITE "1" ;
+LOCATE COMP "ramIO1_1" SITE "2" ;
+LOCATE COMP "ramIO1_2" SITE "5" ;
+LOCATE COMP "ramIO1_3" SITE "6" ;
+# >>>>>  Beginn Original  >>>>>
+LOCATE COMP "ramIO1_4" SITE "7" ;
+LOCATE COMP "ramIO1_5" SITE "8" ;
+LOCATE COMP "ramIO1_6" SITE "9" ;
+# <<<<<  Origignal Ende  <<<<<
+# >>>>>  Beginn Umbau  >>>>>
+# LOCATE COMP "ramIO1_4" SITE "70" ;
+# LOCATE COMP "ramIO1_5" SITE "71" ;
+# LOCATE COMP "ramIO1_6" SITE "72" ;
+# <<<<<  Umbau Ende  <<<<<
+LOCATE COMP "ramIO1_7" SITE "10" ;
+LOCATE COMP "ramOE" SITE "143" ;
+LOCATE COMP "ramWE" SITE "144" ;
+LOCATE COMP "switch_0" SITE "58" ;
+LOCATE COMP "switch_1" SITE "57" ;
+LOCATE COMP "switch_2" SITE "56" ;
+LOCATE COMP "switch_3" SITE "55" ;
+LOCATE COMP "switch_4" SITE "54" ;
+LOCATE COMP "switch_5" SITE "53" ;
+LOCATE COMP "switch_6" SITE "52" ;
+LOCATE COMP "switch_7" SITE "50" ;
+LOCATE COMP "rx" SITE "110" ;
+LOCATE COMP "tx" SITE "109" ;
+LOCATE COMP "XtalClock_i" SITE "21" ;
+LOCATE COMP "XtalEnable_o" SITE "22" ;
+#
+# LOCATE COMP "input_0" SITE "" ;
+LOCATE COMP "input_1" SITE "87" ;
+LOCATE COMP "input_2" SITE "88" ;
+LOCATE COMP "input_3" SITE "89" ;
+LOCATE COMP "input_4" SITE "90" ;
+LOCATE COMP "input_5" SITE "91" ;
+LOCATE COMP "input_6" SITE "92" ;
+LOCATE COMP "input_7" SITE "93" ;
+LOCATE COMP "input_8" SITE "94" ;
+LOCATE COMP "input_9" SITE "96" ;
+LOCATE COMP "input_10" SITE "98" ;
+LOCATE COMP "input_11" SITE "99" ;
+LOCATE COMP "input_12" SITE "100" ;
+LOCATE COMP "input_13" SITE "101" ;
+LOCATE COMP "input_14" SITE "102" ;
+LOCATE COMP "input_15" SITE "103" ;
+LOCATE COMP "input_16" SITE "104" ;
+LOCATE COMP "input_17" SITE "107" ;
+LOCATE COMP "input_18" SITE "108" ;
+LOCATE COMP "input_19" SITE "73" ;
+LOCATE COMP "input_20" SITE "74" ;
+LOCATE COMP "input_21" SITE "77" ;
+LOCATE COMP "input_22" SITE "78" ;
+LOCATE COMP "input_23" SITE "113" ;
+LOCATE COMP "input_24" SITE "114" ;
+LOCATE COMP "input_25" SITE "115" ;
+LOCATE COMP "input_26" SITE "116" ;
+LOCATE COMP "input_27" SITE "61" ;
+LOCATE COMP "input_28" SITE "62" ;
+LOCATE COMP "input_29" SITE "65" ;
+LOCATE COMP "input_30" SITE "66" ;
+LOCATE COMP "input_31" SITE "69" ;
+#
+IOBUF ALLPORTS IO_TYPE=LVCMOS33 PULLMODE=NONE ;
+# FREQUENCY NET "XtalClock_i_c" 50.000000 MHz ;
+# INPUT_SETUP PORT "spi_miso" 5.000000 ns CLKNET "XtalClock_i_c" ;
+# INPUT_SETUP PORT "rx" 20.000000 ns CLKNET "XtalClock_i_c" ;
+# INPUT_SETUP PORT "ramIO1*" 5.000000 ns CLKNET "XtalClock_i_c" ;
+# CLOCK_TO_OUT PORT "spi_csn" 15.000000 ns CLKNET "XtalClock_i_c" ;
+# CLOCK_TO_OUT PORT "spi_mosi" 15.000000 ns CLKNET "XtalClock_i_c" ;
+# CLOCK_TO_OUT PORT "spi_sxtalClock" 15.000000 ns CLKNET "XtalClock_i_c" ;
+# CLOCK_TO_OUT PORT "ramA*" 15.000000 ns CLKNET "XtalClock_i_c" ;
+# CLOCK_TO_OUT PORT "ramCE1" 15.000000 ns CLKNET "XtalClock_i_c" ;
+# CLOCK_TO_OUT PORT "ramOE" 15.000000 ns CLKNET "XtalClock_i_c" ;
+# CLOCK_TO_OUT PORT "ramWE" 15.000000 ns CLKNET "XtalClock_i_c" ;
+# CLOCK_TO_OUT PORT "ramIO1*" 15.000000 ns CLKNET "XtalClock_i_c" ;
+# CLOCK_TO_OUT PORT "tx" 20.000000 ns CLKNET "XtalClock_i_c" ;
+# DEFINE BUS BUS_SRAM
+# NET "ramA_c_0"
+# NET "ramA_c_1"
+# NET "ramA_c_2"
+# NET "ramA_c_3"
+# NET "ramA_c_4"
+# NET "ramA_c_5"
+# NET "ramA_c_6"
+# NET "ramA_c_7"
+# NET "ramA_c_8"
+# NET "ramA_c_9"
+# NET "ramA_c_10"
+# NET "ramA_c_11"
+# NET "ramA_c_12"
+# NET "ramA_c_13"
+# NET "ramA_c_14"
+# NET "ramA_c_15"
+# NET "ramA_c_16"
+# NET "ramIO1_out_0"
+# NET "ramIO1_out_1"
+# NET "ramIO1_out_2"
+# NET "ramIO1_out_3"
+# NET "ramIO1_out_4"
+# NET "ramIO1_out_5"
+# NET "ramIO1_out_6"
+# NET "ramIO1_out_7"
+# NET "ramCE1_int"
+# NET "ramOE_int"
+# NET "ramWE_int";
+# DEFINE BUS BUS_SPI
+# NET "spi_sxtalClock_c"
+# NET "spi_csn_c"
+# NET "spi_mosi_c";
+# MAXSKEW BUS "BUS_SRAM" 3.000000 nS ;
+# MAXSKEW BUS "BUS_SPI" 3.000000 nS ;
+# IOBUF PORT "spi_csn" IO_TYPE=LVCMOS33 DRIVE=4 SLEWRATE=FAST ;
