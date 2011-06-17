@@ -39,7 +39,7 @@ use ieee.numeric_std.all;
 
 entity Logic_Sniffer is
 generic (
-    MEMORY_DEPTH            : integer := 12;               
+    MEMORY_DEPTH            : integer :=  8;               
     Physical_MEMORY_DEPTH   : integer := 36;               
     CLOCK_SPEED             : integer := 50
    );
@@ -55,7 +55,14 @@ port (
     tx                  : inout std_logic;
     
     led                 : out std_logic_vector(7 downto 0);
-    switch              : in  std_logic_vector(7 downto 0)
+    switch              : in  std_logic_vector(7 downto 0);
+
+    -- ===  SRAM  === --
+    SRAM_CE_no      : out   std_logic;                                                              -- Chip Enable (low active)
+    SRAM_OE_no      : out   std_logic;                                                              -- Data_o Enable (low active)
+    SRAM_WE_no      : out   std_logic;                                                              -- Write Enable (low active)
+    SRAM_Addr_o     : out   std_logic_vector(17-1 downto 0);                                        --
+    SRAM_Data_io    : inout std_logic_vector(8-1 downto 0)                                          -- bi-directional data ports
    );
 end Logic_Sniffer;
 
@@ -95,7 +102,7 @@ end component;
 
 component core
 generic (
-    MEMORY_DEPTH    : integer := 6
+    MEMORY_DEPTH    : integer
     );
 port ( 
     clock           : in  std_logic;
@@ -179,13 +186,13 @@ signal ti_n2m_Translate_ls_WriteData        : std_logic_vector(35 downto 0);
 signal ti_n2m_Translate_ls_ReadDataStrobe   : std_logic;
 signal ti_SRAM_ls_output                    : std_logic_vector(35 downto 0);
 
-signal write_p0                             : std_logic;
 
 
 constant FREQ       : integer := 100000000;         -- limited to 100M by onboard SRAM
 -- constant TRXSCALE   : integer := 32;                -- 100M / 28 / 115200 = 31 (5bit)  --If serial communications are not working then try adjusting this number.
 -- constant RATE       : integer := 115200;            -- maximum & base rate
-constant TRXSCALE   : integer := 15;                -- 100M / 28 / 230400 = 15 (4bit)  --If serial communications are not working then try adjusting this number.
+-- constant TRXSCALE   : integer := 15;                -- 100M / 28 / 230400 = 15 (4bit)  --If serial communications are not working then try adjusting this number.
+constant TRXSCALE   : integer := 31;                -- 100M / 14 / 230400 = 31 (5bit)  --If serial communications are not working then try adjusting this number.
 constant RATE       : integer := 230400;            -- maximum & base rate
 
 
@@ -201,8 +208,8 @@ BEGIN
     begin
         resetSwitch     <= not(ResetSwitch_ni);
         ls_BaudRate     <= switch(1 downto 0);                                  -- SW1-1 und SW1-2
-        extClockIn      <= XtalClock_i;     -- J2(1);
-        extTriggerIn    <= not(switch(4));       -- J2(3);                      -- SW3
+        extClockIn      <= XtalClock_i;             -- J2(1);
+        extTriggerIn    <= not(switch(4));          -- J2(3);                   -- SW3
         ls_J24_input <= J2(2) & J2(4) & J2(6) & J2(7);
 
     end block b_MapExt2Int;
@@ -234,35 +241,33 @@ BEGIN
         led(4) <= not(ti_eia232_ts_LED_Xon); 
         led(2) <= not(tx);
         led(1) <= not(rx);
-        led(0) <= '0';  -- not(ti_Status_LED_ts_Status_LED);
+        led(0) <= not(ti_Status_LED_ts_Status_LED);
     end block b_MapInt2Ext;
 
    -- ===  Multiplexer to connect test mode and number schemes  === --
-   process(resetSwitch, clock)
-      subtype SLV2 is std_logic_vector(1 downto 0);
-   begin
-      if (resetSwitch = '1') then
-        ls_input        <= (others => '0');
-        test_counter    <= (others => '0');
-      elsif rising_edge(clock) then
-         case SLV2'(testModeReg & numberSchemeReg) is
-            -- ===  Inside Number Scheme  === --
-            when "00" =>
-               ls_input(31 downto 0) <= not(switch(5)) & input(31 downto 1);            -- SW4 & J1
-            -- ===  Outside Number Scheme  === --
-            when "01" =>
-               ls_input(31 downto 4) <= not(switch(5)) & input(31 downto 5);            -- SW4 & J1 (teilweise)
-               ls_input( 3 downto 0) <= ls_J24_input;                                   -- Eingabe mit Stiftleise J2 überschreiben
-            -- ===  Test Mode  === --
-            when "10" =>
-               ls_input     <= std_logic_vector(test_counter(35 downto 4));
+    process(resetSwitch, clock)
+        subtype SLV2 is std_logic_vector(1 downto 0);
+    begin
+        if (resetSwitch = '1') then
+            ls_input        <= (others => '0');
+            test_counter    <= (others => '0');
+        elsif rising_edge(clock) then
+            if (testModeReg = '1') then 
+                -- ===  Test Mode  === --
+               ls_input     <= "000000000000000000000000" & std_logic_vector(test_counter(14 downto 7));
                test_counter <= test_counter + 1;
-            when others =>
-               ls_input(31 downto 0)  <= not(switch(5)) & input(31 downto 1);           -- SW4 & J1
-         end case;
-
-      end if;
-   end process;
+            else 
+                if (numberSchemeReg = '1') then
+                    -- ===  Outside Number Scheme  === --
+                    ls_input(31 downto 4) <= not(switch(5)) & input(31 downto 5);            -- SW4 & J1 (teilweise)
+                    ls_input( 3 downto 0) <= ls_J24_input;                                   -- Eingabe mit Stiftleise J2 überschreiben
+                else
+                    -- ===  Inside Number Scheme  === --
+                    ls_input(31 downto 0) <= not(switch(5)) & input(31 downto 1);            -- SW4 & J1
+                end if;
+            end if;
+        end if;
+    end process;
 
 
     i_clockman: clockman 
@@ -271,16 +276,16 @@ BEGIN
         clk0  => clock
         );
 
-    -- i_Status_LED: entity work.Status_LED
-    -- port map (
-        -- RESET_i              => resetSwitch,                                                        -- Reset      (high active)
-        -- CLK_i                => clock,                                                              -- Systemtakt (132,7104 MHz)            -- blinkt viel langsamer ;-) (später noch anpassen)
+    i_Status_LED: entity work.Status_LED
+    port map (
+        RESET_i              => resetSwitch,                                                        -- Reset      (high active)
+        CLK_i                => clock,                                                              -- Systemtakt (132,7104 MHz)            -- blinkt viel langsamer ;-) (später noch anpassen)
 
-        -- slow_i               => '0',                                                                -- Blinken im Halbsekundentakt
-        -- fast_i               => '1',                                                                -- sehr schnelles Blinken
+        slow_i               => '0',                                                                -- Blinken im Halbsekundentakt
+        fast_i               => '1',                                                                -- sehr schnelles Blinken
 
-        -- Status_LED_o         => ti_Status_LED_ts_Status_LED                                         -- blinkende Status-LED
-        -- );
+        Status_LED_o         => ti_Status_LED_ts_Status_LED                                         -- blinkende Status-LED
+        );
 
     i_eia232: eia232
     generic map (
@@ -335,50 +340,74 @@ BEGIN
     -- process(clock)
     -- begin
         -- if rising_edge(clock) then
-            write_p0 <= write;
+            -- write_p0 <= write;
         -- end if;
     -- end process;
 
-    i_n2m_Translate: entity work.n2m_Translate
+    -- i_n2m_Translate: entity work.n2m_Translate
+    -- generic map (
+        -- n                   => MEMORY_DEPTH,
+        -- m                   => Physical_MEMORY_DEPTH
+        -- )
+    -- port map (
+        -- RESET_i             => li_Core_ls_intReset,                         -- Reset (high active)
+        -- CLK_i               => clock,                                       -- Systemtakt
+
+        -- -- ===  Core-Interface  === --
+        -- WriteDataStrobe_i   => write,
+        -- WriteData_i         => memoryOut,
+
+        -- ReadDataStrobe_i    => read,
+        -- ReadData_o          => memoryIn,
+
+        -- -- ===  Memory-Interface  === --
+        -- WriteDataStrobe_o   => ti_n2m_Translate_ls_WriteDataStrobe,
+        -- WriteData_o         => ti_n2m_Translate_ls_WriteData(Physical_MEMORY_DEPTH-1 downto 0),
+
+        -- ReadDataStrobe_o    => ti_n2m_Translate_ls_ReadDataStrobe,
+        -- ReadData_i          => ti_SRAM_ls_output(Physical_MEMORY_DEPTH-1 downto 0)
+        -- );
+
+
+    -- i_sram: sram_bram
+    -- generic map (
+        -- ADDRESS_WIDTH => 12,
+        -- MEMORY_DEPTH => Physical_MEMORY_DEPTH
+        -- )
+    -- port map (
+        -- reset   => resetSwitch,
+        -- -- reset   => li_Core_ls_intReset,
+        -- clock   => clock,
+        -- write   => ti_n2m_Translate_ls_WriteDataStrobe,
+        -- input   => ti_n2m_Translate_ls_WriteData,
+        -- read    => ti_n2m_Translate_ls_ReadDataStrobe,
+        -- output  => ti_SRAM_ls_output
+        -- );
+    
+    
+    i_external_SRAM: entity work.external_SRAM
     generic map (
-        n                   => MEMORY_DEPTH,
-        m                   => Physical_MEMORY_DEPTH
+        gAddress_Width  => 17,                                                                      -- 17 = 128KiB static RAM
+        gData_Width     =>  8
         )
     port map (
-        RESET_i             => li_Core_ls_intReset,                         -- Reset (high active)
-        CLK_i               => clock,                                       -- Systemtakt
-
-        -- ===  Core-Interface  === --
-        WriteDataStrobe_i   => write_p0,
-        WriteData_i         => memoryOut,
-
-        ReadDataStrobe_i    => read,
-        ReadData_o          => memoryIn,
-
-        -- ===  Memory-Interface  === --
-        WriteDataStrobe_o   => ti_n2m_Translate_ls_WriteDataStrobe,
-        WriteData_o         => ti_n2m_Translate_ls_WriteData(Physical_MEMORY_DEPTH-1 downto 0),
-
-        ReadDataStrobe_o    => ti_n2m_Translate_ls_ReadDataStrobe,
-        ReadData_i          => ti_SRAM_ls_output(Physical_MEMORY_DEPTH-1 downto 0)
+        Reset_i         => resetSwitch,
+        CLK_i           => clock,
+    
+        Write_i         => write,
+        Data_i          => memoryOut(7 downto 0),
+        Read_i          => read,
+        Data_o          => memoryIn(7 downto 0),
+    
+        -- ===  SRAM  === --
+        SRAM_CE_no      => SRAM_CE_no,                                                              -- chip enable (low active)
+        SRAM_OE_no      => SRAM_OE_no,                                                              -- data_o enable (low active)
+        SRAM_WE_no      => SRAM_WE_no,                                                              -- write enable (low active)
+        SRAM_Addr_o     => SRAM_Addr_o,                                                             --
+        SRAM_Data_io    => SRAM_Data_io                                                             -- bi-directional data ports
         );
 
-
-    i_sram: sram_bram
-    generic map (
-        ADDRESS_WIDTH => 12,
-        MEMORY_DEPTH => Physical_MEMORY_DEPTH
-        )
-    port map (
-        reset => resetSwitch,
-        -- reset => li_Core_ls_intReset,
-        clock => clock,
-        write => ti_n2m_Translate_ls_WriteDataStrobe,
-        input => ti_n2m_Translate_ls_WriteData,
-        read => ti_n2m_Translate_ls_ReadDataStrobe,
-        output => ti_SRAM_ls_output
-    );
-    
+   
 --**************************************************************************************************
 END rtl;
 --**************************************************************************************************

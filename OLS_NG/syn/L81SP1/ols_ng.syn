@@ -4,21 +4,23 @@ PROJECT OLS_NG
 DESIGN ols_ng Normal
 DEVKIT LFXP2-5E-6TN144C
 ENTRY Pure VHDL
-MODULE ..\..\src\lattice.vhd
-MODSTYLE BUFGMUX Normal
-MODSTYLE clockman Normal
 MODULE ..\..\src\memory\ip\DRAM.lpc
 MODSTYLE dram Normal
 MODULE ..\..\src\memory\ip\BRAM.lpc
 MODSTYLE bram Normal
 MODULE ..\..\src\memory\lattice_sram.vhd
 MODSTYLE sram_bram Normal
+MODULE ..\..\src\lattice.vhd
+MODSTYLE BUFGMUX Normal
+MODSTYLE clockman Normal
 MODULE ..\..\src\memory\n_to_m_encode.vhd
 MODSTYLE n_to_m_encode Normal
 MODULE ..\..\src\memory\n_to_m_decode.vhd
 MODSTYLE n_to_m_decode Normal
 MODULE ..\..\src\memory\n2m_translate.vhd
-MODSTYLE n2m_translate Normal
+MODSTYLE n2m_Translate Normal
+MODULE ..\..\src\memory\external_SRAM.vhd
+MODSTYLE external_sram Normal
 MODULE ..\..\src\core\controller.vhd
 MODSTYLE controller Normal
 MODULE ..\..\src\core\rle_enc.vhd
@@ -49,6 +51,8 @@ MODULE ..\..\src\rs232\prescaler.vhd
 MODSTYLE prescaler Normal
 MODULE ..\..\src\rs232\eia232.vhd
 MODSTYLE eia232 Normal
+MODULE ..\..\..\..\..\..\..\components\chips\status_led\Status_LED.vhd
+MODSTYLE status_led Normal
 MODULE ..\..\src\ip\PLL.lpc
 MODSTYLE pll Normal
 MODULE ..\..\src\logic_sniffer.vhd

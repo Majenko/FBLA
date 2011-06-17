@@ -239,6 +239,14 @@ begin
     end if;
 end process;
 
+-- === nur zur Info ausgeben  === --
+assert (1 = 2)                                                                                      -- ohne 'assert' wird bei der Synthese (Synplify) kein Report ausgeben
+    report "Receiver: " &
+        "FREQ      = "  & integer'image(FREQ) & ", " &
+        "RATE      = "  & integer'image(RATE) & ", " &
+        "BITLENGTH = "  & integer'image(BITLENGTH)
+    severity NOTE;
+
 --**************************************************************************************************
 END rtl;
 --**************************************************************************************************

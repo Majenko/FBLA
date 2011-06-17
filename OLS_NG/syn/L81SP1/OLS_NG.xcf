@@ -18,11 +18,11 @@
 				<BScanLen>1</BScanLen>
 				<BScanVal>0</BScanVal>
 			</Bypass>
-			<File>ols_ng.jed</File>
-			<MaskFile>C:\PROGRAMME\ISPTOOLS8_1\ISPVMSYSTEM\DataBase\xpga\xp2\lfxp2-5.msk</MaskFile>
-			<FileTime>03/11/11 18:52:03</FileTime>
-			<JedecChecksum>0x3EBE</JedecChecksum>
-			<Operation>FLASH Erase,Program,Verify,Refresh</Operation>
+			<File>D:\IHS\projects\Lattice\Brevia\FBLA\OLS_NG\syn\L81SP1\ols_ng.jed</File>
+			<MaskFile>C:\EDA\LATTICE\DIAMOND\1.1\ISPVMSYSTEM\DataBase\xpga\xp2\lfxp2-5.msk</MaskFile>
+			<FileTime>06/16/11 14:38:53</FileTime>
+			<JedecChecksum>0xE6E0</JedecChecksum>
+			<Operation>Slave SPI Erase,Program,Verify,Refresh</Operation>
 			<Option>
 				<SVFVendor>JTAG STANDARD</SVFVendor>
 				<IOState>HighZ</IOState>
@@ -32,17 +32,18 @@
 				<TCKFrequency>1.000000 MHz</TCKFrequency>
 				<SVFProcessor>ispVM</SVFProcessor>
 				<Usercode>0xFFFFFFFF</Usercode>
-				<AccessMode>FLASH</AccessMode>
+				<AccessMode>Slave SPI Interface Programming</AccessMode>
 			</Option>
 		</Device>
 	</Chain>
 	<ProjectOptions>
-		<Program>SEQUENTIAL</Program>
+		<Program>Slave SPI Interface Programming</Program>
 		<Process>ENTIRED CHAIN</Process>
 		<OperationOverride>No Override</OperationOverride>
 		<StartTAP>TLR</StartTAP>
 		<EndTAP>TLR</EndTAP>
 		<DeGlitch value="TRUE"/>
+		<DisableCheckBoard value="TRUE"/>
 		<VerifyUsercode value="TRUE"/>
 		<PinSetting>
 			TMS	LOW;
@@ -52,4 +53,8 @@
 			CableEN	HIGH;
 		</PinSetting>
 	</ProjectOptions>
+	<USBOptions>
+		<PortAdd>EzUSB-0</PortAdd>
+		<USBID>\\?\usb#vid_1134&amp;amp;pid_8001#5&amp;amp;c0aa250&amp;amp;0&amp;amp;4#</USBID>
+	</USBOptions>
 </ispXCF>

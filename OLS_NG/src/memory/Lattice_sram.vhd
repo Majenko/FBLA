@@ -65,7 +65,6 @@ constant cDRAM_Size         : integer :=   240;                -- Distributet RA
 
 -- constant cAddresses         : integer := cBRAM_Size;
 constant cAddresses         : integer := cBRAM_Size + cDRAM_Size;
-
 constant cMaxAddress        : integer := cAddresses - 1;
 
 

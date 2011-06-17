@@ -228,7 +228,13 @@ begin
 end process p_LED_Xon_Xoff;
 
 
+assert (1 = 2)                                                                                  -- ohne 'assert' wird bei der Synthese (Synplify) kein Report ausgeben
+    report "EIA232: " &
+        "FREQ  = "  & integer'image(FREQ)  & ", " &
+        "RATE  = "  & integer'image(RATE)  & ", " &
+        "SCALE = "  & integer'image(SCALE)
+    severity NOTE;
+
 --**************************************************************************************************
 END rtl;
 --**************************************************************************************************
-

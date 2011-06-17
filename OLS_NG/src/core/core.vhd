@@ -372,7 +372,7 @@ begin
     
         ls_memoryIn(MEMORY_DEPTH-1) <= '0';
         
-        case MEMORY_DEPTH is
+        case MEMORY_DEPTH-1 is
             when 0 to 7 =>
                 ls_memoryIn( 7) <= memoryIn(MEMORY_DEPTH-1);
             when 8 to 15 =>

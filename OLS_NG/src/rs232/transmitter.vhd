@@ -65,16 +65,17 @@ constant cMetaData_Version       : string := character'val(2) & "v0.01" & charac
 constant cMetaData : string := cMetaData_DeviceName & cMetaData_Version;
 signal ls_MetaCnt : integer range 0 to cMetaData'high-1;
 
-type TX_STATES is (IDLE, SEND, POLL);
+type TX_STATES is (IDLE, SEND, SYNC, POLL);
 
 constant BITLENGTH : integer := FREQ / RATE;
+constant cBits     : integer := 10;
 
 signal dataBuffer       : std_logic_vector(31 downto 0);
 signal disabledBuffer   : std_logic_vector(3 downto 0);
-signal txBuffer         : std_logic_vector(9 downto 0) := "1000000000";
+signal txBuffer         : std_logic_vector(9 downto 0);
 signal byte             : std_logic_vector(7 downto 0);
 signal counter          : integer range 0 to BITLENGTH;
-signal bits             : integer range 0 to 10;
+signal bits             : integer range 0 to cBits-1;
 signal bytes            : integer range 0 to 4;
 signal state            : TX_STATES;
 signal paused           : std_logic;
@@ -97,7 +98,7 @@ begin
         counter     <= 0;
         bits        <= 0;
         byteDone    <= '0';
-        txBuffer    <= (others => '0');
+        txBuffer    <= (others => '1');
     
     elsif rising_edge(clock) then
         if (writeByte = '1') then
@@ -108,7 +109,7 @@ begin
         elsif counter = BITLENGTH then
             counter  <= 0;
             txBuffer <= '1' & txBuffer(9 downto 1);
-            if (bits = 10) then
+            if (bits = cBits-1) then
                 byteDone <= '1';
             else
                 bits <= bits + 1;
@@ -181,6 +182,12 @@ begin
                             byte     <= dataBuffer(31 downto 24);
                             disabled <= disabledBuffer(3);
                     end case;
+                    -- writeByte <= '1';
+                    state     <= SYNC;
+                end if;
+
+            when SYNC =>
+                if (trxClock = '1') then
                     writeByte <= '1';
                     state     <= POLL;
                 end if;
@@ -208,7 +215,16 @@ begin
         end if;
     end if;
 end process;
-   
+
+
+-- === nur zur Info ausgeben  === --
+assert (1 = 2)                                                                                      -- ohne 'assert' wird bei der Synthese (Synplify) kein Report ausgeben
+    report "Transmitter: " &
+        "FREQ      = "  & integer'image(FREQ) & ", " &
+        "RATE      = "  & integer'image(RATE) & ", " &
+        "BITLENGTH = "  & integer'image(BITLENGTH)
+    severity NOTE;
+
 --**************************************************************************************************
 END rtl;
 --**************************************************************************************************
