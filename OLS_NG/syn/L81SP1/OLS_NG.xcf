@@ -20,8 +20,8 @@
 			</Bypass>
 			<File>D:\IHS\projects\Lattice\Brevia\FBLA\OLS_NG\syn\L81SP1\ols_ng.jed</File>
 			<MaskFile>C:\EDA\LATTICE\DIAMOND\1.1\ISPVMSYSTEM\DataBase\xpga\xp2\lfxp2-5.msk</MaskFile>
-			<FileTime>06/16/11 14:38:53</FileTime>
-			<JedecChecksum>0xE6E0</JedecChecksum>
+			<FileTime>07/06/11 11:52:49</FileTime>
+			<JedecChecksum>0xAB36</JedecChecksum>
 			<Operation>Slave SPI Erase,Program,Verify,Refresh</Operation>
 			<Option>
 				<SVFVendor>JTAG STANDARD</SVFVendor>

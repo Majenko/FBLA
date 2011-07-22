@@ -164,13 +164,13 @@ begin
         when READBYTE =>
             if (counter = BITLENGTH) then
                 ncounter  <= 0;
-                nbitcount <= bitcount + 1;
                 if (bitcount = 8) then
                     nbytecount <= bytecount + 1;
                     nstate     <= ANALYZE;
                     nopcode    <= opcode;
                     ndataBuf   <= dataBuf;
                 else
+                    nbitcount <= bitcount + 1;
                     nbytecount <= bytecount;
                     if (bytecount = 0) then
                         nopcode  <= rx & opcode(7 downto 1);

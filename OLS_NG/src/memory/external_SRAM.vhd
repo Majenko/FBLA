@@ -106,10 +106,11 @@ BEGIN
 -- end block b_MapInt2Ext;
 
 
--- ===  memory address controller
+-- ===  memory address controller  === --
 p_LIFO: process(Reset_i, CLK_i)
 begin
     if (Reset_i = '1') then
+        sm_SRAM             <= s_SaveReset;
         Data_o              <= (others => '0');
         SRAM_CE_no          <= not('0');                               -- chip enable
         SRAM_OE_no          <= not('0');                               -- output enable
@@ -136,24 +137,33 @@ begin
                 SRAM_Data_io <= (others => 'Z');                                                    -- data output tristate
 
                 if (Write_i = '1') then
+                    if (ls_WriteReadCnt < cMaxAddress) then
+                        ls_WriteReadCnt <= ls_WriteReadCnt + 1;
+                    end if;
                     ls_Address   <= ls_Address + 1;
                     SRAM_Addr_o  <= std_logic_vector(ls_Address + 1);
                     SRAM_CE_no   <= not('1');                                                       -- chip enable
-                    SRAM_WE_no   <= not('1');                                                       -- write enable
+                    -- SRAM_WE_no   <= not('1');                                                       -- write enable (ein Takt später setzen)
                     ls_WriteData <= Data_i ;                                                        -- latch write data
                     ls_wait_cnt  <= 2;
                     sm_SRAM      <= s_WriteCycle;
                 end if;
 
                 if (Read_i = '1') then
-                    SRAM_CE_no   <= not('1');                                                       -- chip enable
-                    SRAM_OE_no   <= not('1');                                                       -- output enable
-                    ls_wait_cnt  <= 6;
-                    sm_SRAM <= s_ReadCycle;
+                    if (ls_WriteReadCnt > 0) then
+                        ls_WriteReadCnt <= ls_WriteReadCnt - 1;
+                        SRAM_CE_no   <= not('1');                                                   -- chip enable
+                        SRAM_OE_no   <= not('1');                                                   -- output enable
+                        ls_wait_cnt  <= 6;
+                        sm_SRAM <= s_ReadCycle;
+                    else
+                        Data_o <= (others => '0');                                                  -- Ausgabe ausblenden, wenn max. Speicherbereich gelesen wurde
+                    end if;
                 end if;
 
             ----------------------------------------------------------------------------------------
             when s_WriteCycle =>
+                SRAM_WE_no   <= not('1');                                                           -- write enable (ein Takt später setzen)
                 if (ls_wait_cnt > 0) then
                     ls_wait_cnt <= ls_wait_cnt - 1;
                 else
@@ -168,7 +178,7 @@ begin
                     ls_wait_cnt <= ls_wait_cnt - 1;
                 else
                     SRAM_WE_no   <= not('0');                                                       -- write enable
-                    SRAM_Data_io <= (others => '0');                                                -- data output tristate
+                    -- SRAM_Data_io <= (others => 'Z');                                                -- data output tristate [Daten noch einen Takt länger anstehen lassen]
                     sm_SRAM      <= s_Idle;
                 end if;
 
@@ -178,25 +188,12 @@ begin
                     ls_wait_cnt <= ls_wait_cnt - 1;
                 else
                     ls_Address  <= ls_Address - 1;
+                    SRAM_CE_no   <= not('0');                                                           -- chip enable
+                    SRAM_OE_no   <= not('0');                                                           -- output enable
                     Data_o      <= SRAM_Data_io;                                                    -- input data
                     sm_SRAM     <= s_Idle;
                 end if;
         end case;
-
-
-        if (Write_i = '1') then
-            if (ls_WriteReadCnt < cMaxAddress) then
-                ls_WriteReadCnt <= ls_WriteReadCnt + 1;
-            end if;
-        end if;
-
-        if (Read_i = '1') then
-            if (ls_WriteReadCnt > 0) then
-                ls_WriteReadCnt <= ls_WriteReadCnt - 1;
-            else
-                Data_o <= (others => '0');                                                          -- Ausgabe ausblenden, wenn max. Speicherbereich gelesen wurde
-            end if;
-        end if;
 
     end if;
 end process p_LIFO;

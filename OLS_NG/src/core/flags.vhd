@@ -35,13 +35,13 @@ port (
     data            : in  std_logic_vector(10 downto 0);
     clock           : in  std_logic;
     write           : in  std_logic;
-    demux           : out std_logic;
-    filter          : out std_logic;
-    external        : out std_logic;
-    inverted        : out std_logic;
-    rle             : out std_logic;
-    numberScheme    : out std_logic;
-    testMode        : out std_logic
+    demux           : out std_logic := '0';
+    filter          : out std_logic := '0';
+    external        : out std_logic := '0';
+    inverted        : out std_logic := '0';
+    rle             : out std_logic := '0';
+    numberScheme    : out std_logic := '0';
+    testMode        : out std_logic := '0'
     );
 end flags;
 
@@ -59,15 +59,15 @@ BEGIN
 process (clock)
 begin
 
-    --synthesis translate_off
-    demux          <= '0';
-    filter         <= '0';
-    external       <= '0';
-    inverted       <= '0';
-    rle            <= '1';
-    numberScheme   <= '0';
-    testMode       <= '1';
-    --synthesis translate_on
+    -- --synthesis translate_off
+    -- demux          <= '0';
+    -- filter         <= '0';
+    -- external       <= '0';
+    -- inverted       <= '0';
+    -- rle            <= '1';
+    -- numberScheme   <= '0';
+    -- testMode       <= '1';
+    -- --synthesis translate_on
 
     if rising_edge(clock) then
         if (write = '1') then

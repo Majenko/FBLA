@@ -139,7 +139,8 @@ begin
             end if;
             
             ncounter    <= (others => '0');
-            memoryWrite <= not(busy) and inputReady;          -- mit dem Schreiben warten, bis das letzte Byte übertragen worden ist
+            memoryWrite <= inputReady;
+            -- memoryWrite <= not(busy) and inputReady;          -- mit dem Schreiben warten, bis das letzte Byte übertragen worden ist
     
         -- ===  keep sampling for 4 * fwd + 4 samples after run condition  === --
         when DELAY =>
