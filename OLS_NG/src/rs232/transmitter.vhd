@@ -59,11 +59,11 @@ end transmitter;
 ARCHITECTURE rtl OF transmitter IS
 --**************************************************************************************************
 
-constant cMetaData_DeviceName    : string := character'val(1) & "Brevia Logic Sniffer" & character'val(0);
-constant cMetaData_Version       : string := character'val(2) & "v0.01" & character'val(0);
+-- constant cMetaData_DeviceName    : string := character'val(1) & "Brevia Logic Sniffer" & character'val(0);
+-- constant cMetaData_Version       : string := character'val(2) & "v0.01" & character'val(0);
 
-constant cMetaData : string := cMetaData_DeviceName & cMetaData_Version;
-signal ls_MetaCnt : integer range 0 to cMetaData'high-1;
+-- constant cMetaData : string := cMetaData_DeviceName & cMetaData_Version;
+-- signal ls_MetaCnt : integer range 0 to cMetaData'high-1;
 
 type TX_STATES is (IDLE, SEND, SYNC, POLL);
 
@@ -76,12 +76,10 @@ signal txBuffer         : std_logic_vector(9 downto 0);
 signal byte             : std_logic_vector(7 downto 0);
 signal counter          : integer range 0 to BITLENGTH;
 signal bits             : integer range 0 to cBits-1;
-signal bytes            : integer range 0 to 4;
 signal state            : TX_STATES;
 signal paused           : std_logic;
 signal writeByte        : std_logic;
 signal byteDone         : std_logic;
-signal disabled         : std_logic;
 
 
 --**************************************************************************************************
@@ -104,9 +102,9 @@ begin
         if (writeByte = '1') then
             counter  <= 0;
             bits     <= 0;
-            byteDone <= disabled;
+            byteDone <= '0';
             txBuffer <= '1' & byte & "0";
-        elsif counter = BITLENGTH then
+        elsif ( (counter = BITLENGTH) or ((bits = cBits-1) and (counter = BITLENGTH-1)) ) then
             counter  <= 0;
             txBuffer <= '1' & txBuffer(9 downto 1);
             if (bits = cBits-1) then
@@ -129,9 +127,7 @@ begin
         state           <= IDLE;
         dataBuffer      <= (others => '0');
         disabledBuffer  <= (others => '0');
-        disabled        <= '0';
         byte            <= (others => '0');
-        bytes           <= 0;
         busy            <= '0';
 
     elsif rising_edge(clock) then
@@ -149,41 +145,34 @@ begin
                     dataBuffer      <= data;
                     disabledBuffer  <= disabledGroups;
                     state           <= SEND;
-                    bytes           <= 0;
                 elsif id = '1' then
-                    dataBuffer      <= x"534c4131";            -- Protokol: SAL1
+                    dataBuffer      <= x"534C4131";            -- Protokol: SLA1
                     disabledBuffer  <= "0000";
                     state           <= SEND;
-                    bytes           <= 0;
-                elsif (meta = '1') then
-                    -- dataBuffer      <= x"014D5300";            -- Metadata device name : MS
-                    dataBuffer      <= x"00534D01";            -- Metadata device name : MS
-                    disabledBuffer  <= "0000";
-                    state           <= SEND;
-                    bytes           <= 0;
+                -- elsif (meta = '1') then
+                    -- -- dataBuffer      <= x"014D5300";            -- Metadata device name : MS
+                    -- dataBuffer      <= x"00534D01";            -- Metadata device name : MS
+                    -- disabledBuffer  <= "0000";
+                    -- state           <= SEND;
                 end if;
             
             when SEND =>
-                if (bytes = 4) then
+                state <= SYNC;
+                        
+                if (disabledBuffer(0) = '0') then 
+                    byte <= dataBuffer(7 downto 0);
+                    disabledBuffer(0) <= '1';
+                elsif (disabledBuffer(1) = '0') then 
+                    byte <= dataBuffer(15 downto 8);
+                    disabledBuffer(1) <= '1';
+                elsif (disabledBuffer(2) = '0') then 
+                    byte <= dataBuffer(23 downto 16);
+                    disabledBuffer(2) <= '1';
+                elsif (disabledBuffer(3) = '0') then 
+                    byte <= dataBuffer(31 downto 24);
+                    disabledBuffer(3) <= '1';
+                else 
                     state <= IDLE;
-                else
-                    bytes <= bytes + 1;
-                    case bytes is
-                        when 0 =>
-                            byte     <= dataBuffer(7 downto 0);
-                            disabled <= disabledBuffer(0);
-                        when 1 =>
-                            byte     <= dataBuffer(15 downto 8);
-                            disabled <= disabledBuffer(1);
-                        when 2 =>
-                            byte     <= dataBuffer(23 downto 16);
-                            disabled <= disabledBuffer(2);
-                        when others =>
-                            byte     <= dataBuffer(31 downto 24);
-                            disabled <= disabledBuffer(3);
-                    end case;
-                    -- writeByte <= '1';
-                    state     <= SYNC;
                 end if;
 
             when SYNC =>

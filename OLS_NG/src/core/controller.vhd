@@ -47,7 +47,7 @@ port (
     wrSize          : in  std_logic;
     run             : in  std_logic;
     busy            : in  std_logic;
-    send            : buffer std_logic;
+    send            : out  std_logic;
     output          : out std_logic_vector(31 downto 0);
     memoryIn        : in  std_logic_vector(31 downto 0);
     memoryOut       : out std_logic_vector(31 downto 0);
@@ -72,7 +72,8 @@ signal nWaitCnt             : unsigned(3 downto 0);
 signal WaitCnt              : unsigned(3 downto 0);
 signal nstate               : CONTROLLER_STATES; 
 signal state                : CONTROLLER_STATES;
-signal sendReg              : std_logic;
+signal ls_send              : std_logic;
+signal nls_send             : std_logic;
 
 
 --**************************************************************************************************
@@ -81,7 +82,7 @@ BEGIN
 
 output    <= memoryIn;
 memoryOut <= input;
--- send      <= sendReg;
+send      <= ls_send;
 
 -- ===  synchronization and reset logic  === --
 process(reset, clock) 
@@ -90,12 +91,12 @@ begin
         state   <= SAMPLE;
         counter <= (others => '0');
         WaitCnt <= (others => '0');
-        send    <= '0';
+        ls_send <= '0';
     elsif rising_edge(clock) then
         state   <= nstate;
         counter <= ncounter;
         WaitCnt <= nWaitCnt;
-        send    <= sendReg;
+        ls_send <= nls_send;
     end if;
 end process;
 
@@ -120,13 +121,13 @@ end process;
 -- end process;
 
 -- ===  FSM to control the controller action  === --
-process(state, run, counter, WaitCnt, fwd, inputReady, bwd, busy, send)
+process(state, run, counter, WaitCnt, fwd, inputReady, bwd, busy, ls_send)
 begin
     nstate   <= state;
     ncounter <= counter;
     nWaitCnt <= WaitCnt;
     
-    sendReg     <= '0';
+    nls_send    <= '0';
     memoryRead  <= '0';
     memoryWrite <= '0';
     
@@ -176,11 +177,11 @@ begin
             end if;
             
             memoryRead  <= '1';
-            sendReg     <= '1';
+            nls_send    <= '1';
     
         -- ===  wait for the transmitter to become ready again  === --
         when READWAIT =>
-            if ((busy = '0') and (send = '0') and (sendReg = '0')) then
+            if ((busy = '0') and (ls_send = '0') and (nls_send = '0')) then
                 nstate <= READ;
             end if;
     end case;

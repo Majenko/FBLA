@@ -153,7 +153,7 @@ signal memoryOut                : std_logic_vector(31 downto 0);
 signal ls_input                 : std_logic_vector(31 downto 0);
 signal output                   : std_logic_vector(31 downto 0);
 signal clock                    : std_logic;
-signal clk                      : std_logic;
+-- signal clk                      : std_logic;
 signal read                     : std_logic; 
 signal write                    : std_logic; 
 signal execute                  : std_logic; 
@@ -165,7 +165,7 @@ signal testmodeState            : std_logic := '0';  --Puts the OLS into a test 
 signal numbering                : std_logic := '0';      --Selects the number scheme on the OLS. 0 is Inside scheme 1 is Outside scheme
 signal ti_eia232_ts_LED_Xon     : std_logic;
 signal ti_eia232_ts_LED_Xoff    : std_logic;
-signal test_counter             : unsigned(35 downto 0) := (others => '0');
+signal test_counter             : unsigned(31 downto 0) := (others => '0');
 
 
 
@@ -211,7 +211,6 @@ BEGIN
         extClockIn      <= XtalClock_i;             -- J2(1);
         extTriggerIn    <= not(switch(4));          -- J2(3);                   -- SW3
         ls_J24_input <= J2(2) & J2(4) & J2(6) & J2(7);
-
     end block b_MapExt2Int;
 
 
@@ -246,7 +245,6 @@ BEGIN
 
    -- ===  Multiplexer to connect test mode and number schemes  === --
     process(resetSwitch, clock)
-        subtype SLV2 is std_logic_vector(1 downto 0);
     begin
         if (resetSwitch = '1') then
             ls_input        <= (others => '0');
@@ -255,6 +253,7 @@ BEGIN
             if (testModeReg = '1') then 
                 -- ===  Test Mode  === --
                ls_input     <= "000000000000000000000000" & std_logic_vector(test_counter(14 downto 7));
+               -- ls_input     <= std_logic_vector(test_counter);
                test_counter <= test_counter + 1;
             else 
                 if (numberSchemeReg = '1') then
@@ -407,6 +406,8 @@ BEGIN
         SRAM_Data_io    => SRAM_Data_io                                                             -- bi-directional data ports
         );
 
+    memoryOut(31 downto 8) <= (others => '0');
+    memoryIn(31 downto 8)  <= (others => '0');
    
 --**************************************************************************************************
 END rtl;

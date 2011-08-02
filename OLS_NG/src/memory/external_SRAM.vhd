@@ -120,6 +120,7 @@ begin
         ls_Address          <= (others => '0');
         ls_WriteData        <= (others => '0');
         ls_WriteReadCnt     <= 0;
+        ls_wait_cnt         <= 0;
         
     elsif rising_edge(CLK_i) then
         case sm_SRAM is

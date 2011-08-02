@@ -165,6 +165,7 @@ begin
             if (counter = BITLENGTH) then
                 ncounter  <= 0;
                 if (bitcount = 8) then
+                    nbitcount  <= bitcount;
                     nbytecount <= bytecount + 1;
                     nstate     <= ANALYZE;
                     nopcode    <= opcode;
