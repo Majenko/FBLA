@@ -57,7 +57,7 @@ ARCHITECTURE rtl OF external_SRAM IS
 
 
 constant cAddresses         : integer := 2**gAddress_Width;
-constant cMaxAddress        : integer := cAddresses - 1;
+constant cMaxAddress        : integer := cAddresses;    --  - 1;
 
 
 signal ls_Address           : unsigned (gAddress_Width-1 downto 0);
