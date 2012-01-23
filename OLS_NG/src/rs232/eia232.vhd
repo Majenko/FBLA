@@ -40,6 +40,7 @@ port (
     clock       : in  std_logic;
     reset       : in  std_logic;
     speed       : in  std_logic_vector(1 downto 0);
+    XOnOff_i    : in  std_logic;
     rx          : in  std_logic;
     tx          : out std_logic;
     cmd         : out std_logic_vector(39 downto 0);
@@ -143,8 +144,8 @@ begin
             case opcode is
                 when x"02" => id <= '1';
                 when x"04" => null;  --  meta <= '1';
-                when x"11" => xon <= '1';
-                when x"13" => xoff <= '1';
+                when x"11" => xon     <= XOnOff_i;
+                when x"13" => xoff    <= XOnOff_i;
                 when x"82" => wrFlags <= '1';
                 when others =>
             end case;
@@ -228,7 +229,7 @@ begin
 end process p_LED_Xon_Xoff;
 
 
-assert (1 = 2)                                                                                  -- ohne 'assert' wird bei der Synthese (Synplify) kein Report ausgeben
+assert (1 = 2)                                                                                      -- ohne 'assert' wird bei der Synthese (Synplify) kein Report ausgeben
     report "EIA232: " &
         "FREQ  = "  & integer'image(FREQ)  & ", " &
         "RATE  = "  & integer'image(RATE)  & ", " &

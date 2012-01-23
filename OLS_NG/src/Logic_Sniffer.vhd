@@ -88,6 +88,7 @@ port (
     clock : in  std_logic;
     reset : in  std_logic;
     speed : in  std_logic_vector(1 downto 0);
+    XOnOff_i : in  std_logic;                         -- enable Xon/Xoff
     rx : in  std_logic;
     data : in  std_logic_vector(31 downto 0);
     send : in  std_logic;
@@ -252,14 +253,15 @@ BEGIN
         elsif rising_edge(clock) then
             if (testModeReg = '1') then 
                 -- ===  Test Mode  === --
-               ls_input     <= "000000000000000000000000" & std_logic_vector(test_counter(14 downto 7));
+               -- ls_input     <= "000000000000000000000000" & std_logic_vector(test_counter(14 downto 7));
+               ls_input     <= "0000000" & std_logic_vector(test_counter(31 downto 7));
                -- ls_input     <= std_logic_vector(test_counter);
                test_counter <= test_counter + 1;
             else 
                 if (numberSchemeReg = '1') then
                     -- ===  Outside Number Scheme  === --
                     ls_input(31 downto 4) <= not(switch(5)) & input(31 downto 5);            -- SW4 & J1 (teilweise)
-                    ls_input( 3 downto 0) <= ls_J24_input;                                   -- Eingabe mit Stiftleise J2 überschreiben
+                    ls_input( 3 downto 0) <= ls_J24_input;                                   -- Eingabe mit Stiftleise J2 ï¿½berschreiben
                 else
                     -- ===  Inside Number Scheme  === --
                     ls_input(31 downto 0) <= not(switch(5)) & input(31 downto 1);            -- SW4 & J1
@@ -278,7 +280,7 @@ BEGIN
     i_Status_LED: entity work.Status_LED
     port map (
         RESET_i              => resetSwitch,                                                        -- Reset      (high active)
-        CLK_i                => clock,                                                              -- Systemtakt (132,7104 MHz)            -- blinkt viel langsamer ;-) (später noch anpassen)
+        CLK_i                => clock,                                                              -- Systemtakt (132,7104 MHz)            -- blinkt viel langsamer ;-) (spï¿½ter noch anpassen)
 
         slow_i               => '0',                                                                -- Blinken im Halbsekundentakt
         fast_i               => '1',                                                                -- sehr schnelles Blinken
@@ -295,7 +297,8 @@ BEGIN
     port map (
         clock       => clock, 
         reset       => resetSwitch,
-        speed       => switch(1 downto 0),       -- SPEED,
+        speed       => switch(1 downto 0),          -- SPEED
+        XOnOff_i    => switch(3),                   -- enable Xon/Xoff
         rx          => rx,
         tx          => tx,
         cmd         => cmd,

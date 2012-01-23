@@ -5,6 +5,7 @@
 	<Chain>
 		<Comm>JTAG</Comm>
 		<Device>
+			<SelectedProg value="TRUE"/>
 			<Pos>1</Pos>
 			<Vendor>Lattice</Vendor>
 			<Family>LatticeXP2</Family>
@@ -20,14 +21,15 @@
 			</Bypass>
 			<File>D:\IHS\projects\Lattice\Brevia\FBLA\OLS_NG\syn\L81SP1\ols_ng.jed</File>
 			<MaskFile>C:\EDA\LATTICE\DIAMOND\1.1\ISPVMSYSTEM\DataBase\xpga\xp2\lfxp2-5.msk</MaskFile>
-			<FileTime>07/06/11 11:52:49</FileTime>
-			<JedecChecksum>0xAB36</JedecChecksum>
+			<FileTime>1/2/2012 13:53:52</FileTime>
+			<JedecChecksum>0xE2B0</JedecChecksum>
 			<Operation>Slave SPI Erase,Program,Verify,Refresh</Operation>
 			<Option>
 				<SVFVendor>JTAG STANDARD</SVFVendor>
 				<IOState>HighZ</IOState>
 				<PreloadLength>394</PreloadLength>
 				<IOVectorData>0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF</IOVectorData>
+				<Reinitialize value="TRUE"/>
 				<OverideUES value="TRUE"/>
 				<TCKFrequency>1.000000 MHz</TCKFrequency>
 				<SVFProcessor>ispVM</SVFProcessor>
@@ -45,16 +47,16 @@
 		<DeGlitch value="TRUE"/>
 		<DisableCheckBoard value="TRUE"/>
 		<VerifyUsercode value="TRUE"/>
-		<PinSetting>
+	</ProjectOptions>
+	<CableOptions>
+		<CableName>USB</CableName>
+		<PortAdd>EzUSB-0</PortAdd>
+		<JTAGPinSetting>
 			TMS	LOW;
 			TCK	LOW;
 			TDI	LOW;
 			TDO	LOW;
 			CableEN	HIGH;
-		</PinSetting>
-	</ProjectOptions>
-	<USBOptions>
-		<PortAdd>EzUSB-0</PortAdd>
-		<USBID>\\?\usb#vid_1134&amp;amp;pid_8001#5&amp;amp;c0aa250&amp;amp;0&amp;amp;4#</USBID>
-	</USBOptions>
+		</JTAGPinSetting>
+	</CableOptions>
 </ispXCF>

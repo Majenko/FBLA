@@ -103,7 +103,14 @@ begin
             counter  <= 0;
             bits     <= 0;
             byteDone <= '0';
-            txBuffer <= '1' & byte & "0";
+            
+            -- -- ===  Xon/Xoff substitute  === --
+            -- if ((byte = x"11") or (byte = x"13")) then 
+                -- txBuffer <= '1' & (byte or x"80") & "0";
+            -- else
+                txBuffer <= '1' & byte & "0";
+            -- end if;
+                
         elsif ( (counter = BITLENGTH) or ((bits = cBits-1) and (counter = BITLENGTH-1)) ) then
             counter  <= 0;
             txBuffer <= '1' & txBuffer(9 downto 1);
@@ -184,7 +191,11 @@ begin
             when POLL =>
                 writeByte <= '0';
                 if ((byteDone = '1') and (writeByte = '0') and (paused = '0')) then
-                    state <= SEND;
+                    if (disabledBuffer = "1111") then
+                        state <= IDLE;
+                    else
+                        state <= SEND;
+                    end if;
                 end if;
             
         end case;
